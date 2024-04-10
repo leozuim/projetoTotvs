@@ -1,0 +1,20 @@
+<div style="text-align: center;">
+  <h1>
+    Bem vindo ao meu projeto
+  </h1>
+</div>
+<div>
+  <input type="text"[(ngModel)]="cliente">
+  <button type="button" (click)="addCliente()">Add Cliente</button>
+<div>
+<table>
+   <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Telefone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <li **ngFor="let item of clientes">{{item}}</li>
+  </tbody>
+</table>
