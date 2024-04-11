@@ -2,19 +2,26 @@
   <h1>
     Bem vindo ao meu projeto
   </h1>
-</div>
-<div>
-  <input type="text"[(ngModel)]="cliente">
-  <button type="button" (click)="addCliente()">Add Cliente</button>
-<div>
-<table>
-   <thead>
-    <tr>
-      <th>Nome</th>
-      <th>Telefone</th>
-    </tr>
-  </thead>
-  <tbody>
-    <li **ngFor="let item of clientes">{{item}}</li>
-  </tbody>
-</table>
+  <h1>Lista de Clientes</h1>
+
+  <ul>
+    <li *ngFor="let cliente of clientes; let i = index">
+      <strong>Nome:</strong> {{ cliente.nome }} <br>
+      <strong>Telefone:</strong> {{ cliente.telefone }} <br>
+      <button (click)="editarCliente(i)">Editar</button>
+      <button (click)="excluirCliente(i)">Deletar</button>
+    </li>
+  </ul>
+
+  <h2>Formulário de Cliente</h2>
+
+  <form (submit)="addCliente()">
+    <label for="nome">Nome:</label>
+    <input type="text" id="nome" [(ngModel)]="cliente.nome" name="nome" required><br>
+    <label for="telefone">Telefone:</label>
+    <input type="text" id="telefone" [(ngModel)]="cliente.telefone" name="telefone" required><br>
+    <button type="submit">Adicionar Cliente</button>
+  </form>
+
+
+<router-outlet />

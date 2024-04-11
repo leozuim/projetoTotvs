@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { BaserowService } from './baserow.service';
 
 interface Cliente {
   nome: string;
@@ -8,23 +8,64 @@ interface Cliente {
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'projeto';
   clientes: Cliente[] = [];
-  cliente: Cliente = { nome: '', telefone: '' };;
+  cliente: Cliente = {nome: '', telefone: '' };
+  clienteIndex: number = -1;
 
-  constructor(){
+  constructor(private baserowService: BaserowService) {}
 
+  ngOnInit() {
+    this.obterClientes();
   }
 
-  addCliente(){
-    this.clientes.push({ nome: this.cliente.nome, telefone: this.cliente.telefone });
-    this.cliente.nome = ''; // Limpa o nome após adicionar
-    this.cliente.telefone = ''; // Limpa o telefone após adicionar
+  obterClientes() {
+    this.baserowService.getClientes().subscribe(
+      (data: any) => {
+        this.clientes = data.results; // Supondo que os clientes estão em uma propriedade "results" da resposta
+      },
+      error => {
+        console.error('Erro ao obter clientes:', error);
+      }
+    );
+  }
+
+  addCliente() {
+    if (this.cliente.nome && this.cliente.telefone) {
+      this.baserowService.adicionarCliente(this.cliente).subscribe(() => {
+        this.obterClientes(); // Atualiza a lista de clientes após adicionar um novo
+        this.cliente = { nome: '', telefone: '' }; // Limpa os campos do formulário após adicionar
+      });
+    } else {
+      alert('Por favor, preencha todos os campos.');
+    }
+  }
+
+  editarCliente(index: number) {
+    const cliente = { ...this.clientes[index] };
+    this.cliente = cliente;
+    this.clienteIndex = index;
+  }
+
+  salvarEdicao() {
+    if (this.clienteIndex !== -1) {
+      this.baserowService.editarCliente(this.cliente).subscribe(() => {
+        this.obterClientes(); // Atualiza a lista de clientes após editar
+        this.clienteIndex = -1;
+        this.cliente = {nome: '', telefone: '' }; // Limpa o cliente após a edição
+      });
+    }
+  }
+
+  excluirCliente(clienteId: number) {
+    if (confirm('Tem certeza que deseja excluir este cliente?')) {
+      this.baserowService.excluirCliente(clienteId).subscribe(() => {
+        this.obterClientes(); // Atualiza a lista de clientes após excluir
+      });
+    }
   }
 }
