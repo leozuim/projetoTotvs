@@ -26,7 +26,7 @@ export class AppComponent {
   obterClientes() {
     this.baserowService.getClientes().subscribe(
       (data: any) => {
-        this.clientes = data.results; // Supondo que os clientes estão em uma propriedade "results" da resposta
+        this.clientes = data.results;
       },
       error => {
         console.error('Erro ao obter clientes:', error);
